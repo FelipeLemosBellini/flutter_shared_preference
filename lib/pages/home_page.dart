@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shared_preference/pages/visualization_page.dart';
 import 'package:flutter_shared_preference/service/shared_preference_service.dart';
 import 'package:flutter_shared_preference/widget/app_bar_widget.dart';
 import 'package:flutter_shared_preference/widget/button_widget.dart';
@@ -22,7 +23,12 @@ class _HomePageState extends State<HomePage> {
 
     preferenceService.write("email", emailController.text);
     preferenceService.write("password", passwordController.text);
+
+    callVisualizationPage();
   }
+
+  void callVisualizationPage() =>
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const VisualizationPage()));
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +52,6 @@ class _HomePageState extends State<HomePage> {
               focusNode: passwordFocusNode,
               labelText: "Fill in your password")
         ]),
-        bottomNavigationBar: ButtonWidget(onTap: () {}, title: "Login"));
+        bottomNavigationBar: ButtonWidget(onTap: saveEmailAndPassword, title: "Login"));
   }
 }
