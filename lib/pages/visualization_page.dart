@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shared_preference/service/shared_preference_service.dart';
 import 'package:flutter_shared_preference/widget/app_bar_widget.dart';
+import 'package:flutter_shared_preference/widget/button_widget.dart';
 
 class VisualizationPage extends StatefulWidget {
   const VisualizationPage({super.key});
@@ -10,34 +11,45 @@ class VisualizationPage extends StatefulWidget {
 }
 
 class _VisualizationPageState extends State<VisualizationPage> {
-  String email = "";
-  String password = "";
+  String email = '';
+  String password = '';
 
   @override
   void initState() {
-    _setEmailAndPassword();
     super.initState();
+    _setEmailAndPassword();
   }
 
-  _setEmailAndPassword() {
+  void _setEmailAndPassword() async {
     SharedPreferenceService preferenceService = SharedPreferenceService();
+    String emailPrefer = await preferenceService.read("email");
+    String passwordPrefer = await preferenceService.read("password");
     setState(() {
-      email = preferenceService.read("email");
-      password = preferenceService.read("password");
+      email = emailPrefer;
+      password = passwordPrefer;
     });
+  }
+
+  void _deleteInformation() async {
+    SharedPreferenceService preferenceService = SharedPreferenceService();
+    preferenceService.cleanLocalData();
+    _setEmailAndPassword();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(disableIcon: true),
-        body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(email, style: const TextStyle(fontSize: 16, color: Colors.black)),
+        appBar: AppBarWidget(disableIcon: true, title: "Account logged in"),
+        body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+              Text('Email: $email', style: const TextStyle(fontSize: 16, color: Colors.black)),
               Padding(
-                  padding: const EdgeInsets.only(top: 20), child: Text(password, style: const TextStyle(fontSize: 16)))
-            ]));
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text('Password: $password', style: const TextStyle(fontSize: 16)))
+            ])),
+        bottomNavigationBar: ButtonWidget(onTap: _deleteInformation, title: "Clean Information"));
   }
 }
